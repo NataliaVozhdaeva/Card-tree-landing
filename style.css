@@ -1,0 +1,75 @@
+
+.page-header{
+    z-index: 10;
+    position: sticky;
+    top: 0px;
+    background-color: blanchedalmond;
+}
+
+.header-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.container{
+    padding: 20px;
+}
+
+.view-form{
+    width: 150px;
+    text-align: justify;
+}
+
+.main_container{
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 90vw;
+    margin: auto;
+}
+
+.main-container_card{
+    width: 430px;
+    text-align: center;
+    position: relative;
+}
+
+.pre-image{
+    margin: 0;
+    max-width: 400px;
+    max-height: 300px;
+}
+
+@media only screen and (max-width:768px){
+    .pre-image{
+        max-width: 300px;
+    }    
+}
+
+.button_close{
+    position: absolute;
+    top: 0;
+    right: 15px;    
+}
+
+.button_cancel{
+    position: fixed;
+    width: 50px;
+    top:50%;
+    right: 0;
+    writing-mode: vertical-lr; 
+    text-orientation: upright; 
+}
+
+.page-footer{
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    justify-content: end;
+    height: 50px;
+    background-color: blanchedalmond;
+    margin-top: auto;
+}
+.footer_container{
+    align-self: center;
+}
