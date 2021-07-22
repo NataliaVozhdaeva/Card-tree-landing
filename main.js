@@ -1,33 +1,49 @@
 window.onload = async function(){
     answer = await init();
+    chooseView();
+    searchCategory();
     createElements();
+    createTreeElements();   
+    layoutTree();
     closeCard();
-    cancelAll();
+    cancelAll()
 }
 
 const buttonCancel = document.querySelector('.button_cancel');
-const cardContainer = document.getElementById('container__cards');   
+const cardContainer = document.getElementById('container__cards');  
+const treeContainer = document.getElementById('container__tree');  
 let buttonsClose;
 let card;
 let answer;
+let url = 'http://contest.elecard.ru/frontend_data/';
 
  
 async function init(){
-    const response = await fetch('http://contest.elecard.ru/frontend_data/catalog.json');
+    const response = await fetch(url+'catalog.json');
     let ret = await response.json();
     return ret;
 };
+
+function timestampToDate(ts) {
+    let d = new Date();
+    d.setTime(ts);
+    return ('0' + d.getDate()).slice(-2) + '.' + ('0' + (d.getMonth() + 1)).slice(-2) + '.' + d.getFullYear();
+}
 
 function createElements(){
     for(let i=0; i<answer.length; i++){
         let element = document.createElement('div');
         element.classList.add('main-container_card');
-        //element.innerHTML='Some text';
         cardContainer.append(element);
         let image = document.createElement('img');
         image.classList.add('pre-image');
         element.append(image);
-        image.setAttribute('src', 'http://contest.elecard.ru/frontend_data/'+answer[i].image);
+        image.setAttribute('src', url+answer[i].image);
+        let content = document.createElement('div');
+        let date = timestampToDate(answer[i].timestamp);
+        content.innerHTML=answer[i].category+'<p>'+date;
+        content.classList.add('card_content');
+        element.append(content);
         let btnClose = document.createElement('button');
         btnClose.classList.add('button_close');
         element.append(btnClose);
@@ -36,6 +52,55 @@ function createElements(){
         card = document.querySelectorAll('.main-container_card')
         };   
 };
+
+let arrCategory = {};
+
+function searchCategory(){
+    
+    for(let i=0; i<answer.length; i++){
+        if(answer[i].category in arrCategory){
+            arrCategory[answer[i].category].push(answer[i].image);
+        } else {
+            arrCategory[answer[i].category] = [answer[i].image];
+        }
+    }
+   // console.log(Object.values(arrCategory));
+    return arrCategory;
+}
+//console.log(Object.keys(arrCategory));
+//console.log(arrCategory);
+
+
+function createTreeElements(){
+    let ul = document.createElement('ul');
+    ul.classList.add('nested');
+    treeContainer.append(ul);
+    
+    //arrCategory.keys(arrCategory);
+
+    for(let i=0; i<Object.keys(arrCategory).length; i++){
+      let categoryList = document.createElement('li');
+      ul.append(categoryList);
+      let categorySpan = document.createElement('span');
+      categorySpan.classList.add('caret');
+      categoryList.append(categorySpan)
+      categorySpan.textContent = String(Object.keys(arrCategory)[i]);
+      let secondUl = document.createElement('ul');
+      secondUl.classList.add('nested');
+      categoryList.append(secondUl);
+
+        for(let j=0; j<Object.values(arrCategory)[i].length; j++){
+            let imgList = document.createElement('li');
+            secondUl.append(imgList);
+            let imageInTree = document.createElement('img');
+            imageInTree.classList.add('thumbnail');
+            let attribute = Object.values(arrCategory)[i][j];
+            //console.log('Переменная атрибут = '+attribute);
+            imageInTree.setAttribute('src', url+attribute);
+            imgList.append(imageInTree);
+        }
+    }
+}
 
 function closeCard(){ 
     buttonsClose.forEach(function(item, i, buttonsClose){ 
@@ -53,59 +118,30 @@ function cancelAll(){
     }); //buttonCancel onclick
 };//cancelAll
 
-/*let pic1 = {
-    id:1,
-    category:'city',
-    url:'https://im0-tub-ru.yandex.net/i?id=d3ed0a1cbad3514adc0a10132d87cb3d&n=13',
-    size:1};
+let toggler = document.getElementsByClassName('caret');
 
-let pic2 = {
-    id:2,
-    category:'animals',
-    url:'https://i.ucrazy.ru/files/pics/2015.09/zhivotnmir14.jpg',
-    size:2};
+function layoutTree(){
+for (let i = 0; i < toggler.length; i++) {
+  toggler[i].addEventListener('click', function() {
+    this.parentElement.querySelector('.nested').classList.toggle('active');
+    this.classList.toggle('caret-down');
+  });
+};
+}
 
-let pic3 = {
-    id:3,
-    category:'girl',
-    url:'https://pbs.twimg.com/media/DabcLZcXcAA4Fuv.jpg',
-    size:3};    
+function chooseView(){
+let radios = document.querySelectorAll('input[type="radio"]');
 
-let pic4 = {
-    id:4,
-    category:'city',
-    url:'https://im0-tub-ru.yandex.net/i?id=d3ed0a1cbad3514adc0a10132d87cb3d&n=13',
-    size:4};
-    
-let pic5 = {
-    id:5,
-    category:'animals',
-    url:'https://i.ucrazy.ru/files/pics/2015.09/zhivotnmir14.jpg',
-    size:5};
-    
-let pic6 = {
-    id:6,
-    category:'girl',
-    url:'https://pbs.twimg.com/media/DabcLZcXcAA4Fuv.jpg',
-    size:6};   
-    
-let pic7 = {
-    id:7,
-    category:'city',
-    url:'https://im0-tub-ru.yandex.net/i?id=d3ed0a1cbad3514adc0a10132d87cb3d&n=13',
-    size:7};
-
-let pic8 = {
-    id:8,
-    category:'animals',
-    url:'https://i.ucrazy.ru/files/pics/2015.09/zhivotnmir14.jpg',
-    size:8};
-
-let pic9 = {
-    id:9,
-    category:'girl',
-    url:'https://pbs.twimg.com/media/DabcLZcXcAA4Fuv.jpg',
-    size:9};    
-
-let pitures = [pic1, pic2, pic3, pic4, pic5, pic6, pic7, pic8, pic9];*/
+for(let radio of radios){
+    radio.addEventListener('click', function() {
+        if(radio.value==='cards'){
+            document.querySelector('.tree').classList.add('notView');
+            document.querySelector('#container__cards').classList.remove('notView');
+        } else {
+            document.querySelector('#container__cards').classList.add('notView');
+            document.querySelector('.tree').classList.remove('notView');
+        }
+    });
+}
+}
 

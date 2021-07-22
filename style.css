@@ -24,8 +24,13 @@
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
-    width: 90vw;
+    width: 95vw;
     margin: auto;
+    min-height: 100vh;
+}
+
+.notView{
+    display: none;
 }
 
 .main-container_card{
@@ -36,14 +41,20 @@
 
 .pre-image{
     margin: 0;
-    max-width: 400px;
-    max-height: 300px;
+    width: 400px;
+    height: 300px;
+    object-fit: cover;
 }
 
 @media only screen and (max-width:768px){
     .pre-image{
         max-width: 300px;
     }    
+}
+
+.card_content{
+    padding: 5px 5px 25px;
+
 }
 
 .button_close{
@@ -72,4 +83,49 @@
 }
 .footer_container{
     align-self: center;
+}
+
+ul, .tree {
+    list-style-type: none;
+}
+
+.tree,  #myUL {
+    margin: 0;
+    padding: 0;
+}
+  
+.caret {
+    cursor: pointer;
+    user-select: none; 
+}
+  
+.caret::before {
+    content: "\25B6";
+    color: black;
+    display: inline-block;
+    margin-right: 6px;
+}
+  
+.caret-down::before {
+    transform: rotate(90deg);
+}
+  
+.nested {
+    display: none;
+}
+  
+.active {
+    display: block;
+}
+
+.flex{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.thumbnail{
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    margin: 20px;;
 }
