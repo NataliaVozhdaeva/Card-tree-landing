@@ -7,6 +7,7 @@ window.onload = async function(){
     layoutTree();
     closeCard();
     cancelAll()
+    openThumbnail();
 }
 
 const buttonCancel = document.querySelector('.button_cancel');
@@ -16,7 +17,7 @@ let buttonsClose;
 let card;
 let answer;
 let url = 'http://contest.elecard.ru/frontend_data/';
-
+let thumbnails;
  
 async function init(){
     const response = await fetch(url+'catalog.json');
@@ -64,21 +65,42 @@ function searchCategory(){
             arrCategory[answer[i].category] = [answer[i].image];
         }
     }
-   // console.log(Object.values(arrCategory));
     return arrCategory;
 }
-//console.log(Object.keys(arrCategory));
-//console.log(arrCategory);
 
+function closeCard(){ 
+    buttonsClose.forEach(function(item, i, buttonsClose){ 
+        item.addEventListener('click', () => { 
+            item.parentNode.style.display = 'none';
+        }); 
+    }); 
+ };
+
+function cancelAll(){ 
+    buttonCancel.addEventListener('click', () => {
+        for(let i=0; i<card.length; i++){
+            card[i].style.display = 'inline-block';
+        }
+    }); 
+};
+
+let toggler = document.getElementsByClassName('caret');
+
+function layoutTree(){
+for (let i = 0; i < toggler.length; i++) {
+  toggler[i].addEventListener('click', function() {
+    this.parentElement.querySelector('.nested').classList.toggle('active');
+    this.classList.toggle('caret-down');
+  });
+};
+}
 
 function createTreeElements(){
     let ul = document.createElement('ul');
     ul.classList.add('nested');
     treeContainer.append(ul);
     
-    //arrCategory.keys(arrCategory);
-
-    for(let i=0; i<Object.keys(arrCategory).length; i++){
+      for(let i=0; i<Object.keys(arrCategory).length; i++){
       let categoryList = document.createElement('li');
       ul.append(categoryList);
       let categorySpan = document.createElement('span');
@@ -90,43 +112,24 @@ function createTreeElements(){
       categoryList.append(secondUl);
 
         for(let j=0; j<Object.values(arrCategory)[i].length; j++){
-            let imgList = document.createElement('li');
+            let imgList = document.createElement('span');
             secondUl.append(imgList);
             let imageInTree = document.createElement('img');
             imageInTree.classList.add('thumbnail');
             let attribute = Object.values(arrCategory)[i][j];
-            //console.log('Переменная атрибут = '+attribute);
             imageInTree.setAttribute('src', url+attribute);
             imgList.append(imageInTree);
+            thumbnails = document.querySelectorAll('.thumbnail');
         }
     }
 }
 
-function closeCard(){ 
-    buttonsClose.forEach(function(item, i, buttonsClose){ 
+function openThumbnail(){
+    thumbnails.forEach(function(item, i, thumbnails){ 
         item.addEventListener('click', () => { 
-            item.parentNode.style.display = 'none';
-        }); //buttonsClose onclick
-    }); //buttonsClose forEach
- };//closeCard
-
-function cancelAll(){ 
-    buttonCancel.addEventListener('click', () => {
-        for(let i=0; i<card.length; i++){
-            card[i].style.display = 'inline-block';
-        }
-    }); //buttonCancel onclick
-};//cancelAll
-
-let toggler = document.getElementsByClassName('caret');
-
-function layoutTree(){
-for (let i = 0; i < toggler.length; i++) {
-  toggler[i].addEventListener('click', function() {
-    this.parentElement.querySelector('.nested').classList.toggle('active');
-    this.classList.toggle('caret-down');
-  });
-};
+            item.classList.toggle('bigPicture')
+        }); 
+    }); 
 }
 
 function chooseView(){

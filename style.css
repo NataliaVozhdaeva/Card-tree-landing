@@ -127,5 +127,11 @@ ul, .tree {
     width: 200px;
     height: 150px;
     object-fit: cover;
-    margin: 20px;;
+    margin: 20px;
+    cursor: pointer;
 }
+
+.bigPicture{
+    width:auto;
+    height:auto;
+    margin:20px;}
