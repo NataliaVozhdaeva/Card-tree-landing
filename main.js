@@ -5,7 +5,7 @@ window.onload = async function(){
     createElements();
     createTreeElements();   
     layoutTree();
-    closeCard();
+    //closeCard();
     cancelAll()
     openThumbnail();
 }
@@ -13,11 +13,14 @@ window.onload = async function(){
 const buttonCancel = document.querySelector('.button_cancel');
 const cardContainer = document.getElementById('container__cards');  
 const treeContainer = document.getElementById('container__tree');  
-let buttonsClose;
+//let buttonsClose;
 let card;
 let answer;
 let url = 'http://contest.elecard.ru/frontend_data/';
 let thumbnails;
+let pagination = document.querySelector('.pagination');
+let pageBtns = [];
+let isActiveBtn;
  
 async function init(){
     const response = await fetch(url+'catalog.json');
@@ -29,29 +32,78 @@ function timestampToDate(ts) {
     let d = new Date();
     d.setTime(ts);
     return ('0' + d.getDate()).slice(-2) + '.' + ('0' + (d.getMonth() + 1)).slice(-2) + '.' + d.getFullYear();
-}
+};
 
 function createElements(){
-    for(let i=0; i<answer.length; i++){
-        let element = document.createElement('div');
-        element.classList.add('main-container_card');
-        cardContainer.append(element);
-        let image = document.createElement('img');
-        image.classList.add('pre-image');
-        element.append(image);
-        image.setAttribute('src', url+answer[i].image);
-        let content = document.createElement('div');
-        let date = timestampToDate(answer[i].timestamp);
-        content.innerHTML=answer[i].category+'<p>'+date;
-        content.classList.add('card_content');
-        element.append(content);
-        let btnClose = document.createElement('button');
-        btnClose.classList.add('button_close');
-        element.append(btnClose);
-        btnClose.innerHTML='X';
-        buttonsClose = document.querySelectorAll('.button_close');
-        card = document.querySelectorAll('.main-container_card')
+    let elements = Array.from(answer);
+    let elemOnPage = 9;
+    let pages = Math.ceil(elements.length/elemOnPage);
+    //console.log(elements);
+    
+    for(let i=1; i<=pages; i++){
+        let li = document.createElement('li');
+        li.classList.add('page');
+        li.innerHTML = i;
+        pagination.append(li);
+        pageBtns.push(li);
+    }
+    //console.log(pages);
+
+    showPage(pageBtns[0]);
+    
+    for (let pageBtn of pageBtns){
+        pageBtn.addEventListener('click', function() {
+            
+            showPage(this); 
+        });
+    }
+
+    function showPage(pageBtn){
+
+        if(isActiveBtn){
+            isActiveBtn.classList.remove('activeBtn');
+        }
+
+        isActiveBtn = pageBtn;
+
+        pageBtn.classList.add('activeBtn');
+        let pageNumber = +pageBtn.innerHTML;
+        let start = (pageNumber-1)*elemOnPage;
+        let end = start+elemOnPage;
+        let l=start;
+        let activEls = elements.slice(start, end);
+        cardContainer.innerHTML = '';
+        //console.log(activEls)
+       
+        for(let activEl of activEls){
+            let element = document.createElement('div');
+            element.classList.add('main-container_card');
+            cardContainer.append(element);
+            let image = document.createElement('img');
+            image.classList.add('pre-image');
+            element.append(image);
+            image.setAttribute('src', url+answer[l].image);
+            let content = document.createElement('div');
+            let date = timestampToDate(answer[l].timestamp);
+            content.innerHTML=answer[l].category+'<p>'+date;
+            content.classList.add('card_content');
+            element.append(content);
+            let btnClose = document.createElement('button');
+            btnClose.classList.add('button_close');
+            element.append(btnClose);
+            btnClose.innerHTML='X'+l;
+            buttonsClose = document.querySelectorAll('.button_close');
+            card = document.querySelectorAll('.main-container_card')
+            l++;
+
+            buttonsClose.forEach(function(item, i, buttonsClose){ 
+                item.addEventListener('click', () => { 
+                    item.parentNode.style.display = 'none';
+                }); 
+            }); 
+           
         };   
+    };    
 };
 
 let arrCategory = {};
@@ -68,13 +120,9 @@ function searchCategory(){
     return arrCategory;
 }
 
-function closeCard(){ 
-    buttonsClose.forEach(function(item, i, buttonsClose){ 
-        item.addEventListener('click', () => { 
-            item.parentNode.style.display = 'none';
-        }); 
-    }); 
- };
+//function closeCard(){ 
+    
+ //};
 
 function cancelAll(){ 
     buttonCancel.addEventListener('click', () => {
