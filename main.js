@@ -5,8 +5,8 @@ window.onload = async function(){
     createElements();
     createTreeElements();   
     layoutTree();
-    //closeCard();
-    cancelAll()
+    choosefilter();
+    cancelAll();
     openThumbnail();
 }
 
@@ -21,6 +21,7 @@ let thumbnails;
 let pagination = document.querySelector('.pagination');
 let pageBtns = [];
 let isActiveBtn;
+let filters = document.querySelectorAll('input[name="filter"]');
  
 async function init(){
     const response = await fetch(url+'catalog.json');
@@ -34,12 +35,34 @@ function timestampToDate(ts) {
     return ('0' + d.getDate()).slice(-2) + '.' + ('0' + (d.getMonth() + 1)).slice(-2) + '.' + d.getFullYear();
 };
 
+let arrCategory = {};
+
+function searchCategory(){
+    
+    for(let i=0; i<answer.length; i++){
+        if(answer[i].category in arrCategory){
+            arrCategory[answer[i].category].push(answer[i].image);
+        } else {
+            arrCategory[answer[i].category] = [answer[i].image];
+        }
+    }
+    return arrCategory;
+}
+
+
+
 function createElements(){
     let elements = Array.from(answer);
+    function filter(){
+        for(let filter of filters){
+            filter.addEventListener('click', function() {
+              
+            })
+        }
+        }
     let elemOnPage = 9;
     let pages = Math.ceil(elements.length/elemOnPage);
-    //console.log(elements);
-    
+        
     for(let i=1; i<=pages; i++){
         let li = document.createElement('li');
         li.classList.add('page');
@@ -47,8 +70,7 @@ function createElements(){
         pagination.append(li);
         pageBtns.push(li);
     }
-    //console.log(pages);
-
+  
     showPage(pageBtns[0]);
     
     for (let pageBtn of pageBtns){
@@ -73,9 +95,9 @@ function createElements(){
         let l=start;
         let activEls = elements.slice(start, end);
         cardContainer.innerHTML = '';
-        //console.log(activEls)
-       
+      
         for(let activEl of activEls){
+           
             let element = document.createElement('div');
             element.classList.add('main-container_card');
             cardContainer.append(element);
@@ -91,7 +113,7 @@ function createElements(){
             let btnClose = document.createElement('button');
             btnClose.classList.add('button_close');
             element.append(btnClose);
-            btnClose.innerHTML='X'+l;
+            btnClose.innerHTML='X';
             buttonsClose = document.querySelectorAll('.button_close');
             card = document.querySelectorAll('.main-container_card')
             l++;
@@ -102,27 +124,10 @@ function createElements(){
                 }); 
             }); 
            
-        };   
+        };  
     };    
 };
 
-let arrCategory = {};
-
-function searchCategory(){
-    
-    for(let i=0; i<answer.length; i++){
-        if(answer[i].category in arrCategory){
-            arrCategory[answer[i].category].push(answer[i].image);
-        } else {
-            arrCategory[answer[i].category] = [answer[i].image];
-        }
-    }
-    return arrCategory;
-}
-
-//function closeCard(){ 
-    
- //};
 
 function cancelAll(){ 
     buttonCancel.addEventListener('click', () => {
@@ -180,19 +185,68 @@ function openThumbnail(){
     }); 
 }
 
+function choosefilter(){
+    
+}
+
 function chooseView(){
-let radios = document.querySelectorAll('input[type="radio"]');
+let radios = document.querySelectorAll('input[name="view"]');
 
 for(let radio of radios){
     radio.addEventListener('click', function() {
         if(radio.value==='cards'){
             document.querySelector('.tree').classList.add('notView');
             document.querySelector('#container__cards').classList.remove('notView');
+            pagination.classList.remove('notView');
+            buttonCancel.classList.remove('notView');
         } else {
             document.querySelector('#container__cards').classList.add('notView');
             document.querySelector('.tree').classList.remove('notView');
+            pagination.classList.add('notView');
+            buttonCancel.classList.add('notView');
         }
     });
 }
 }
 
+/*function filters(){
+let filters = document.querySelectorAll('input[name="filter"]');
+
+for(let filter of filters){
+    filter.addEventListener('click', function() {
+        if(filter.value==='category'){
+            let selectContainer = document.createElement('div');
+            selectContainer.innerHTML = 'choose category <p>';
+            cardContainer.prepend(selectContainer);
+            let select = document.createElement('select');
+            select.innerHTML = 'choose category';
+            select.classList.add('chooseCategory');
+            selectContainer.append(select);
+
+            for(let i=0; i<Object.keys(arrCategory).length; i++){
+                let option= document.createElement('option');
+                option.textContent = String(Object.keys(arrCategory)[i]);
+                option.setAttribute('value', (Object.keys(arrCategory)[i]));
+                select.append(option); 
+
+                option.addEventListener('click', function() {
+                    elements = Array.from(Object.values(arrCategory)[i]);
+                    console.log(elements);
+                })   
+            }
+
+        } else if(filter.value==='size'){
+            for(let i=1; i<answer.length; i++){
+            let size = answer[i].filesize;
+            
+                if(size<answer[i-1].filesize){
+                    let storage = answer[i-1];
+                    answer[i-1]=answer[i];
+                    answer[i] = storage;
+                }
+                    
+            }
+        }
+    });
+}
+}*/

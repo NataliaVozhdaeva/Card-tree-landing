@@ -15,17 +15,25 @@
 
   <body>
     <header class="page-header">
-        <div class="header-container container">
+        <div class="header-container">
           <h1>Main header</h1>
           <form class="view-form">
             <p>Choose view</p>
             <span><input name="view" type="radio" value="cards" checked> cards</span>
             <span><input name="view" type="radio" value="tree"> tree</span>  
           </form>
+          <!--<form class="sort">
+            <p>Filter?</p>
+            <span><input name="filter" type="radio" value="no" checked> no</span>
+            <span><input name="filter" type="radio" value="category"> category</span>
+            <span><input name="filter" type="radio" value="date"> date</span> 
+            <span><input name="filter" type="radio" value="size"> size</span>  
+          </form>-->
         </div>  
     </header>  
 
     <main>
+      
       <div class="container main_container" >
         
         <ul class="tree notView">
@@ -40,6 +48,7 @@
         </ul> 
       
         <div class="container main_container" id="container__cards"> 
+          
         </div>
 
     </div>
