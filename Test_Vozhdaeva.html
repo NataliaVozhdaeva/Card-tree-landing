@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700|Old+Standard+TT&display=swap&subset=cyrillic" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="simplePagination.css"/>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>-->
     
     <title>Тестовое_Вождаева</title>
   </head>
@@ -22,13 +22,12 @@
             <span><input name="view" type="radio" value="cards" checked> cards</span>
             <span><input name="view" type="radio" value="tree"> tree</span>  
           </form>
-          <!--<form class="sort">
-            <p>Filter?</p>
-            <span><input name="filter" type="radio" value="no" checked> no</span>
-            <span><input name="filter" type="radio" value="category"> category</span>
-            <span><input name="filter" type="radio" value="date"> date</span> 
-            <span><input name="filter" type="radio" value="size"> size</span>  
-          </form>-->
+          <form class="sort">
+            <p>Sort?</p>
+            <span><input name="sort" type="radio" value="category"> category</span>
+            <span><input name="sort" type="radio" value="timestamp"> date</span> 
+            <span><input name="sort" type="radio" value="filesize"> size</span>  
+          </form>
         </div>  
     </header>  
 
@@ -53,7 +52,7 @@
 
     </div>
       <button class="button button_cancel">Cancel all</button>  
-      <ul class="pagination"></ul>
+      <div id="light-pagination" class="pagination"></div>
     </main>  
 
     <footer class="page-footer">
@@ -64,6 +63,7 @@
     </footer>
 
     <script type="text/javascript" src="main.js"></script> 
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript" src="jquery.simplePagination.js"></script>
   </body>
 

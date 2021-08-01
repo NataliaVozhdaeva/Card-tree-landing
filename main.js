@@ -2,10 +2,13 @@ window.onload = async function(){
     answer = await init();
     chooseView();
     searchCategory();
+    sorting();
+    if(localStorage.getItem('closedCards') !== null){
+        closedCards = JSON.parse(localStorage.getItem ("closedCards"));
+    };
     createElements();
     createTreeElements();   
     layoutTree();
-    choosefilter();
     cancelAll();
     openThumbnail();
 }
@@ -13,7 +16,6 @@ window.onload = async function(){
 const buttonCancel = document.querySelector('.button_cancel');
 const cardContainer = document.getElementById('container__cards');  
 const treeContainer = document.getElementById('container__tree');  
-//let buttonsClose;
 let card;
 let answer;
 let url = 'http://contest.elecard.ru/frontend_data/';
@@ -21,8 +23,10 @@ let thumbnails;
 let pagination = document.querySelector('.pagination');
 let pageBtns = [];
 let isActiveBtn;
-let filters = document.querySelectorAll('input[name="filter"]');
- 
+let sortBtns = document.querySelectorAll('input[name="sort"]');
+let element;
+let closedCards = [];
+
 async function init(){
     const response = await fetch(url+'catalog.json');
     let ret = await response.json();
@@ -49,17 +53,8 @@ function searchCategory(){
     return arrCategory;
 }
 
-
-
 function createElements(){
     let elements = Array.from(answer);
-    function filter(){
-        for(let filter of filters){
-            filter.addEventListener('click', function() {
-              
-            })
-        }
-        }
     let elemOnPage = 9;
     let pages = Math.ceil(elements.length/elemOnPage);
         
@@ -70,12 +65,19 @@ function createElements(){
         pagination.append(li);
         pageBtns.push(li);
     }
-  
+
     showPage(pageBtns[0]);
+    
+    /*$(function() {
+        $(#light-pagination).pagination({
+            items: elements.length,
+            itemsOnPage: 9,
+            cssStyle: 'light-theme'
+        });
+    });*/
     
     for (let pageBtn of pageBtns){
         pageBtn.addEventListener('click', function() {
-            
             showPage(this); 
         });
     }
@@ -97,14 +99,18 @@ function createElements(){
         cardContainer.innerHTML = '';
       
         for(let activEl of activEls){
-           
-            let element = document.createElement('div');
+            element = document.createElement('div');
             element.classList.add('main-container_card');
             cardContainer.append(element);
             let image = document.createElement('img');
             image.classList.add('pre-image');
             element.append(image);
             image.setAttribute('src', url+answer[l].image);
+            for(let j=0; j<closedCards.length; j++){
+                if(closedCards[j]===url+answer[l].image){
+                    element.style.display = 'none';
+                }
+            }
             let content = document.createElement('div');
             let date = timestampToDate(answer[l].timestamp);
             content.innerHTML=answer[l].category+'<p>'+date;
@@ -114,25 +120,31 @@ function createElements(){
             btnClose.classList.add('button_close');
             element.append(btnClose);
             btnClose.innerHTML='X';
-            buttonsClose = document.querySelectorAll('.button_close');
-            card = document.querySelectorAll('.main-container_card')
+            closeCard(btnClose);
+            card = document.querySelectorAll('.main-container_card');
             l++;
+        }; //elements of this page 
+    };// showPage 
+};//createElements
 
-            buttonsClose.forEach(function(item, i, buttonsClose){ 
-                item.addEventListener('click', () => { 
-                    item.parentNode.style.display = 'none';
-                }); 
-            }); 
-           
-        };  
-    };    
-};
-
+function closeCard(item){
+    item.addEventListener('click', () => { 
+        item.parentNode.style.display = 'none';
+        let parent = item.parentNode; 
+        let closeCard = parent.querySelector('.pre-image'); 
+        let closeCardAttribute = closeCard.getAttribute('src');
+        closedCards.push(closeCardAttribute);
+        //console.log(closeCards);
+        localStorage.setItem("closedCards", JSON.stringify(closedCards));
+    }); 
+}
 
 function cancelAll(){ 
     buttonCancel.addEventListener('click', () => {
         for(let i=0; i<card.length; i++){
             card[i].style.display = 'inline-block';
+            localStorage.clear();
+            closedCards = [];
         }
     }); 
 };
@@ -140,12 +152,12 @@ function cancelAll(){
 let toggler = document.getElementsByClassName('caret');
 
 function layoutTree(){
-for (let i = 0; i < toggler.length; i++) {
-  toggler[i].addEventListener('click', function() {
-    this.parentElement.querySelector('.nested').classList.toggle('active');
-    this.classList.toggle('caret-down');
-  });
-};
+    for (let i = 0; i < toggler.length; i++) {
+        toggler[i].addEventListener('click', function() {
+            this.parentElement.querySelector('.nested').classList.toggle('active');
+            this.classList.toggle('caret-down');
+        });
+    };
 }
 
 function createTreeElements(){
@@ -185,68 +197,90 @@ function openThumbnail(){
     }); 
 }
 
-function choosefilter(){
-    
-}
-
 function chooseView(){
 let radios = document.querySelectorAll('input[name="view"]');
 
-for(let radio of radios){
-    radio.addEventListener('click', function() {
-        if(radio.value==='cards'){
-            document.querySelector('.tree').classList.add('notView');
-            document.querySelector('#container__cards').classList.remove('notView');
-            pagination.classList.remove('notView');
-            buttonCancel.classList.remove('notView');
-        } else {
-            document.querySelector('#container__cards').classList.add('notView');
-            document.querySelector('.tree').classList.remove('notView');
-            pagination.classList.add('notView');
-            buttonCancel.classList.add('notView');
-        }
-    });
-}
-}
-
-/*function filters(){
-let filters = document.querySelectorAll('input[name="filter"]');
-
-for(let filter of filters){
-    filter.addEventListener('click', function() {
-        if(filter.value==='category'){
-            let selectContainer = document.createElement('div');
-            selectContainer.innerHTML = 'choose category <p>';
-            cardContainer.prepend(selectContainer);
-            let select = document.createElement('select');
-            select.innerHTML = 'choose category';
-            select.classList.add('chooseCategory');
-            selectContainer.append(select);
-
-            for(let i=0; i<Object.keys(arrCategory).length; i++){
-                let option= document.createElement('option');
-                option.textContent = String(Object.keys(arrCategory)[i]);
-                option.setAttribute('value', (Object.keys(arrCategory)[i]));
-                select.append(option); 
-
-                option.addEventListener('click', function() {
-                    elements = Array.from(Object.values(arrCategory)[i]);
-                    console.log(elements);
-                })   
+    for(let radio of radios){
+        radio.addEventListener('click', function() {
+            if(radio.value==='cards'){
+                document.querySelector('.tree').classList.add('notView');
+                document.querySelector('#container__cards').classList.remove('notView');
+                pagination.classList.remove('notView');
+                buttonCancel.classList.remove('notView');
+            } else {
+                document.querySelector('#container__cards').classList.add('notView');
+                document.querySelector('.tree').classList.remove('notView');
+                pagination.classList.add('notView');
+                buttonCancel.classList.add('notView');
             }
+        });
+    }
+}
 
-        } else if(filter.value==='size'){
-            for(let i=1; i<answer.length; i++){
-            let size = answer[i].filesize;
-            
-                if(size<answer[i-1].filesize){
-                    let storage = answer[i-1];
-                    answer[i-1]=answer[i];
-                    answer[i] = storage;
+function sorting(){
+    for (let sortBtn of sortBtns){
+        sortBtn.addEventListener('click', function() {
+            function compare(a, b) {
+                const elemA = a[sortBtn.value];
+                const elemB = b[sortBtn.value];
+                  
+                let comparison = 0;
+                if (elemA > elemB) {
+                    comparison = 1;
+                } else if (elemA < elemB) {
+                    comparison = -1;
+                    }
+                return comparison;
+            }  
+                answer.sort(compare);
+                pagination.innerHTML = '';
+                createElements();
+        })
+    }
+}
+
+
+
+
+
+/*function filter(){
+    let filters = document.querySelectorAll('input[name="filter"]');
+
+    for(let filter of filters){
+        filter.addEventListener('click', function() {
+            if(filter.value==='category'){
+                let selectContainer = document.createElement('div');
+                selectContainer.innerHTML = 'choose category <p>';
+                cardContainer.prepend(selectContainer);
+                let select = document.createElement('select');
+                select.innerHTML = 'choose category';
+                select.classList.add('chooseCategory');
+                selectContainer.append(select);
+
+                for(let i=0; i<Object.keys(arrCategory).length; i++){
+                    let option= document.createElement('option');
+                    option.textContent = String(Object.keys(arrCategory)[i]);
+                    option.setAttribute('value', (Object.keys(arrCategory)[i]));
+                    select.append(option); 
+
+                    option.addEventListener('click', function() {
+                        elements = Array.from(Object.values(arrCategory)[i]);
+                        console.log(elements);
+                    })   
                 }
-                    
+
+            } else if(filter.value==='size'){
+                for(let i=1; i<answer.length; i++){
+                let size = answer[i].filesize;
+                
+                    if(size<answer[i-1].filesize){
+                        let storage = answer[i-1];
+                        answer[i-1]=answer[i];
+                        answer[i] = storage;
+                    }
+                        
+                }
             }
-        }
-    });
-}
+        });
+    }
 }*/
