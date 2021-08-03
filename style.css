@@ -14,7 +14,12 @@
 
 .container{
     padding: 20px;
-}
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 95vw;
+    margin: auto;
+} 
 
 .view-form{
     width: 150px;
@@ -26,7 +31,6 @@
         width: 100px;
         text-align: left;
     }
-    
 }
 
 .main_container{
@@ -36,6 +40,18 @@
     width: 95vw;
     margin: auto;
     min-height: 100vh;
+    position: relative;
+}
+
+#loading{
+    position: absolute;
+    top: calc(30vh - 103px);
+    left: calc(50vw - 103px);
+    display: block;
+	background: url('http://katushka.in.ua/templates/katushka2/images/ajax-loader.gif') center center no-repeat;
+	opacity: 0.7;
+	width: 207px;
+	height: 207px;
 }
 
 .notView{

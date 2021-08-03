@@ -1,4 +1,5 @@
 window.onload = async function(){
+    loader('show')
     answer = await init();
     chooseView();
     searchCategory();
@@ -7,7 +8,8 @@ window.onload = async function(){
         closedCards = JSON.parse(localStorage.getItem ("closedCards"));
     };
     createElements();
-    createTreeElements();   
+    createTreeElements();  
+    loader('hide')  
     layoutTree();
     cancelAll();
     openThumbnail();
@@ -21,15 +23,15 @@ let answer;
 let url = 'http://contest.elecard.ru/frontend_data/';
 let thumbnails;
 let pagination = document.querySelector('.pagination');
-let pageBtns = [];
+let pageLinks = [];
 let isActiveBtn;
 let sortBtns = document.querySelectorAll('input[name="sort"]');
 let element;
 let closedCards = [];
 
 async function init(){
-    const response = await fetch(url+'catalog.json');
-    let ret = await response.json();
+    const response = await fetch(url+'catalog.json'); 
+    let ret = await response.json();  
     return ret;
 };
 
@@ -56,42 +58,19 @@ function searchCategory(){
 function createElements(){
     let elements = Array.from(answer);
     let elemOnPage = 9;
-    let pages = Math.ceil(elements.length/elemOnPage);
-        
-    for(let i=1; i<=pages; i++){
-        let li = document.createElement('li');
-        li.classList.add('page');
-        li.innerHTML = i;
-        pagination.append(li);
-        pageBtns.push(li);
-    }
-
-    showPage(pageBtns[0]);
-    
-    /*$(function() {
-        $(#light-pagination).pagination({
+    $(function() {
+        $('.pagination').pagination({
             items: elements.length,
-            itemsOnPage: 9,
+            itemsOnPage: elemOnPage,
             cssStyle: 'light-theme'
         });
-    });*/
+    });
     
-    for (let pageBtn of pageBtns){
-        pageBtn.addEventListener('click', function() {
-            showPage(this); 
-        });
-    }
-
-    function showPage(pageBtn){
-
-        if(isActiveBtn){
-            isActiveBtn.classList.remove('activeBtn');
-        }
-
-        isActiveBtn = pageBtn;
-
-        pageBtn.classList.add('activeBtn');
-        let pageNumber = +pageBtn.innerHTML;
+    let pageLinks = pagination.getElementsByTagName('li');
+    showPage(pageLinks[1]);
+    
+    function showPage(pageLink){
+        let pageNumber = +pageLink.innerText;
         let start = (pageNumber-1)*elemOnPage;
         let end = start+elemOnPage;
         let l=start;
@@ -124,8 +103,26 @@ function createElements(){
             card = document.querySelectorAll('.main-container_card');
             l++;
         }; //elements of this page 
+        
+        pageLinks = document.querySelectorAll('.page-link');
+        for (let pageLink of pageLinks){
+            pageLink.addEventListener('click', function() {
+                showPage(this); 
+            });
+        }
+
     };// showPage 
 };//createElements
+
+function loader(isShow){
+    let loader = document.getElementById('loading');
+    if(isShow === 'show'){
+        loader.style.display='block';
+    };
+    if(isShow === 'hide'){
+        loader.style.display='none';
+    }    
+} 
 
 function closeCard(item){
     item.addEventListener('click', () => { 
@@ -134,7 +131,6 @@ function closeCard(item){
         let closeCard = parent.querySelector('.pre-image'); 
         let closeCardAttribute = closeCard.getAttribute('src');
         closedCards.push(closeCardAttribute);
-        //console.log(closeCards);
         localStorage.setItem("closedCards", JSON.stringify(closedCards));
     }); 
 }
@@ -238,49 +234,3 @@ function sorting(){
         })
     }
 }
-
-
-
-
-
-/*function filter(){
-    let filters = document.querySelectorAll('input[name="filter"]');
-
-    for(let filter of filters){
-        filter.addEventListener('click', function() {
-            if(filter.value==='category'){
-                let selectContainer = document.createElement('div');
-                selectContainer.innerHTML = 'choose category <p>';
-                cardContainer.prepend(selectContainer);
-                let select = document.createElement('select');
-                select.innerHTML = 'choose category';
-                select.classList.add('chooseCategory');
-                selectContainer.append(select);
-
-                for(let i=0; i<Object.keys(arrCategory).length; i++){
-                    let option= document.createElement('option');
-                    option.textContent = String(Object.keys(arrCategory)[i]);
-                    option.setAttribute('value', (Object.keys(arrCategory)[i]));
-                    select.append(option); 
-
-                    option.addEventListener('click', function() {
-                        elements = Array.from(Object.values(arrCategory)[i]);
-                        console.log(elements);
-                    })   
-                }
-
-            } else if(filter.value==='size'){
-                for(let i=1; i<answer.length; i++){
-                let size = answer[i].filesize;
-                
-                    if(size<answer[i-1].filesize){
-                        let storage = answer[i-1];
-                        answer[i-1]=answer[i];
-                        answer[i] = storage;
-                    }
-                        
-                }
-            }
-        });
-    }
-}*/

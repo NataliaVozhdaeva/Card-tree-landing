@@ -8,8 +8,8 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700|Old+Standard+TT&display=swap&subset=cyrillic" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="simplePagination.css"/>
 
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>-->
-    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
     <title>Тестовое_Вождаева</title>
   </head>
 
@@ -33,26 +33,20 @@
 
     <main>
       
-      <div class="container main_container" >
-        
-        <ul class="tree notView">
-          
-         <!-- <div class="hidden bigPictureContainer">
-            <img class="bigPicture" src="" alt="original picture">
-            <p class="info">
-          </div>-->
-          
-          <li id="container__tree"><h2 class="caret">Open catalog</h2>
-          </li>
-        </ul> 
-      
-        <div class="container main_container" id="container__cards"> 
-          
-        </div>
+    <div class="container main_container" >
+      <div id="loading"></div>
 
+      <ul class="tree notView"> 
+        <li id="container__tree"><h2 class="caret">Open catalog</h2>
+        </li>
+      </ul> 
+      
+      <div class="container" id="container__cards"></div>
     </div>
+
       <button class="button button_cancel">Cancel all</button>  
       <div id="light-pagination" class="pagination"></div>
+
     </main>  
 
     <footer class="page-footer">
@@ -62,9 +56,8 @@
       </div>   
     </footer>
 
-    <script type="text/javascript" src="main.js"></script> 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript" src="jquery.simplePagination.js"></script>
+    <script type="text/javascript" src="main.js"></script> 
   </body>
 
 </html>  
