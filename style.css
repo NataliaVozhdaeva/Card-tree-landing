@@ -174,47 +174,39 @@ ul, .tree {
     margin:20px;}
 
     @media only screen and (max-width:668px){
-    .bigPicture{
-        width:95vw;
-        margin-left: 0;
-    }
+        .bigPicture{
+            width:95vw;
+            margin-left: 0;
+        }
 
-    img{
-        margin: 0;
-    }
+        img{
+            margin: 0;
+        }
 
-    ul{
-        padding:0;
-    }
+        ul{
+            padding:0;
+        }
     }    
 
 .pagination{
    margin: auto;
 }
 
-.page{
-    list-style: none;
-    display: inline-block;
-    line-height:50px;
-    text-align: center;
-    width: 50px;
-    height: 50px;
-    border: #000 1px solid;
-    margin-left: 5px;
-    margin-bottom: 5px;
+/*.prev{
+    display: none;
 }
 
-.page:hover{
-    background-color: slategray;
-}
-
-.activeBtn{
-    background-color: slategrey;
-    color:#fff;
-}
+.next{
+    display: none;
+}*/
 
 .chooseCategory{
     width: 400px;
     height: 50px;
     background-color:lightgoldenrodyellow;
+}
+
+.animated{
+    transform: scale(0.1, 0.1);
+    transition: 0.5s;
 }

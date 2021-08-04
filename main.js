@@ -23,7 +23,7 @@ let answer;
 let url = 'http://contest.elecard.ru/frontend_data/';
 let thumbnails;
 let pagination = document.querySelector('.pagination');
-let pageLinks = [];
+//let pageLinks = [];
 let isActiveBtn;
 let sortBtns = document.querySelectorAll('input[name="sort"]');
 let element;
@@ -58,22 +58,24 @@ function searchCategory(){
 function createElements(){
     let elements = Array.from(answer);
     let elemOnPage = 9;
+    
     $(function() {
         $('.pagination').pagination({
             items: elements.length,
             itemsOnPage: elemOnPage,
-            cssStyle: 'light-theme'
-        });
-    });
+            cssStyle: 'light-theme',    
+            onPageClick: function(pageNumber){
+                showPage(pageNumber)
+            }//onPageClick
+        });//pagination
+    });//jqueryFunction
     
-    let pageLinks = pagination.getElementsByTagName('li');
-    showPage(pageLinks[1]);
+    showPage('1');
     
-    function showPage(pageLink){
-        let pageNumber = +pageLink.innerText;
+    function showPage(pageNumber){
         let start = (pageNumber-1)*elemOnPage;
         let end = start+elemOnPage;
-        let l=start;
+        let l = start;
         let activEls = elements.slice(start, end);
         cardContainer.innerHTML = '';
       
@@ -103,16 +105,51 @@ function createElements(){
             card = document.querySelectorAll('.main-container_card');
             l++;
         }; //elements of this page 
-        
-        pageLinks = document.querySelectorAll('.page-link');
-        for (let pageLink of pageLinks){
-            pageLink.addEventListener('click', function() {
-                showPage(this); 
-            });
-        }
-
     };// showPage 
 };//createElements
+
+
+  /*$('.pagination').pagination({
+        items: numItems,
+        itemsOnPage: elemOnPage,
+        cssStyle: 'light-theme',
+
+        onPageClick: function (pageNumber) {
+            var showFrom = elemOnPage * (pageNumber - 1);
+            var showTo = showFrom + elemOnPage;
+            elements.hide().slice(showFrom, showTo).show();
+        }
+    });
+
+    let pageLinks = pagination.querySelectorAll('li');
+    let l=elemOnPage*(pageLinks[1].innerText - 1);
+
+    for(let activEl of activEls){
+        element = document.createElement('div');
+        element.classList.add('main-container_card');
+        cardContainer.append(element);
+        let image = document.createElement('img');
+        image.classList.add('pre-image');
+        element.append(image);
+        image.setAttribute('src', url+answer[l].image);
+        for(let j=0; j<closedCards.length; j++){
+            if(closedCards[j]===url+answer[l].image){
+                element.style.display = 'none';
+            }
+        }
+        let content = document.createElement('div');
+        let date = timestampToDate(answer[l].timestamp);
+        content.innerHTML=answer[l].category+'<p>'+date;
+        content.classList.add('card_content');
+        element.append(content);
+        let btnClose = document.createElement('button');
+        btnClose.classList.add('button_close');
+        element.append(btnClose);
+        btnClose.innerHTML='X';
+        closeCard(btnClose);
+        card = document.querySelectorAll('.main-container_card');
+        l++;
+    }; *///elements of this page 
 
 function loader(isShow){
     let loader = document.getElementById('loading');
@@ -122,12 +159,15 @@ function loader(isShow){
     if(isShow === 'hide'){
         loader.style.display='none';
     }    
-} 
+}; 
 
-function closeCard(item){
+ function closeCard(item){
     item.addEventListener('click', () => { 
-        item.parentNode.style.display = 'none';
         let parent = item.parentNode; 
+        let animation = new Promise(function(resolve, reject) {
+            resolve( parent.classList.add('animated'))
+          });
+        animation.then(setTimeout(() =>  parent.style.display = 'none', 300));     
         let closeCard = parent.querySelector('.pre-image'); 
         let closeCardAttribute = closeCard.getAttribute('src');
         closedCards.push(closeCardAttribute);
@@ -139,6 +179,7 @@ function cancelAll(){
     buttonCancel.addEventListener('click', () => {
         for(let i=0; i<card.length; i++){
             card[i].style.display = 'inline-block';
+            card[i].classList.remove('animated');
             localStorage.clear();
             closedCards = [];
         }
@@ -201,12 +242,12 @@ let radios = document.querySelectorAll('input[name="view"]');
             if(radio.value==='cards'){
                 document.querySelector('.tree').classList.add('notView');
                 document.querySelector('#container__cards').classList.remove('notView');
-                pagination.classList.remove('notView');
+                pagination.style.display = 'block';
                 buttonCancel.classList.remove('notView');
             } else {
                 document.querySelector('#container__cards').classList.add('notView');
                 document.querySelector('.tree').classList.remove('notView');
-                pagination.classList.add('notView');
+                pagination.style.display = 'none';
                 buttonCancel.classList.add('notView');
             }
         });
