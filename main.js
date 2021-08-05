@@ -8,26 +8,26 @@ window.onload = async function(){
         closedCards = JSON.parse(localStorage.getItem ("closedCards"));
     };
     createElements();
+    cancelAll();
     createTreeElements();  
     loader('hide')  
     layoutTree();
-    cancelAll();
     openThumbnail();
 }
 
 const buttonCancel = document.querySelector('.button_cancel');
 const cardContainer = document.getElementById('container__cards');  
 const treeContainer = document.getElementById('container__tree');  
-let card;
 let answer;
 let url = 'http://contest.elecard.ru/frontend_data/';
 let thumbnails;
 let pagination = document.querySelector('.pagination');
-//let pageLinks = [];
 let isActiveBtn;
 let sortBtns = document.querySelectorAll('input[name="sort"]');
 let element;
+let card;
 let closedCards = [];
+let fileName;
 
 async function init(){
     const response = await fetch(url+'catalog.json'); 
@@ -44,7 +44,6 @@ function timestampToDate(ts) {
 let arrCategory = {};
 
 function searchCategory(){
-    
     for(let i=0; i<answer.length; i++){
         if(answer[i].category in arrCategory){
             arrCategory[answer[i].category].push(answer[i].image);
@@ -102,54 +101,12 @@ function createElements(){
             element.append(btnClose);
             btnClose.innerHTML='X';
             closeCard(btnClose);
-            card = document.querySelectorAll('.main-container_card');
             l++;
         }; //elements of this page 
+        
+        card = document.querySelectorAll('.main-container_card');
     };// showPage 
 };//createElements
-
-
-  /*$('.pagination').pagination({
-        items: numItems,
-        itemsOnPage: elemOnPage,
-        cssStyle: 'light-theme',
-
-        onPageClick: function (pageNumber) {
-            var showFrom = elemOnPage * (pageNumber - 1);
-            var showTo = showFrom + elemOnPage;
-            elements.hide().slice(showFrom, showTo).show();
-        }
-    });
-
-    let pageLinks = pagination.querySelectorAll('li');
-    let l=elemOnPage*(pageLinks[1].innerText - 1);
-
-    for(let activEl of activEls){
-        element = document.createElement('div');
-        element.classList.add('main-container_card');
-        cardContainer.append(element);
-        let image = document.createElement('img');
-        image.classList.add('pre-image');
-        element.append(image);
-        image.setAttribute('src', url+answer[l].image);
-        for(let j=0; j<closedCards.length; j++){
-            if(closedCards[j]===url+answer[l].image){
-                element.style.display = 'none';
-            }
-        }
-        let content = document.createElement('div');
-        let date = timestampToDate(answer[l].timestamp);
-        content.innerHTML=answer[l].category+'<p>'+date;
-        content.classList.add('card_content');
-        element.append(content);
-        let btnClose = document.createElement('button');
-        btnClose.classList.add('button_close');
-        element.append(btnClose);
-        btnClose.innerHTML='X';
-        closeCard(btnClose);
-        card = document.querySelectorAll('.main-container_card');
-        l++;
-    }; *///elements of this page 
 
 function loader(isShow){
     let loader = document.getElementById('loading');
@@ -236,16 +193,17 @@ function openThumbnail(){
 
 function chooseView(){
 let radios = document.querySelectorAll('input[name="view"]');
-
     for(let radio of radios){
         radio.addEventListener('click', function() {
             if(radio.value==='cards'){
                 document.querySelector('.tree').classList.add('notView');
+                document.querySelector('.sort').classList.remove('notView');
                 document.querySelector('#container__cards').classList.remove('notView');
                 pagination.style.display = 'block';
                 buttonCancel.classList.remove('notView');
             } else {
                 document.querySelector('#container__cards').classList.add('notView');
+                document.querySelector('.sort').classList.add('notView');
                 document.querySelector('.tree').classList.remove('notView');
                 pagination.style.display = 'none';
                 buttonCancel.classList.add('notView');
@@ -254,7 +212,18 @@ let radios = document.querySelectorAll('input[name="view"]');
     }
 }
 
+function getFileNames(){
+    for(let i=0; i<answer.length; i++){
+        let str = answer[i].image;
+        fileName = str.slice(str.lastIndexOf('/')+1);
+
+        answer[i].filename = fileName;
+    }
+}
+
 function sorting(){
+    getFileNames();
+    
     for (let sortBtn of sortBtns){
         sortBtn.addEventListener('click', function() {
             function compare(a, b) {

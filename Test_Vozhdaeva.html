@@ -17,16 +17,17 @@
     <header class="page-header">
         <div class="header-container">
           <h1>Main header</h1>
-          <form class="view-form">
-            <p>Choose view</p>
-            <span><input name="view" type="radio" value="cards" checked> cards</span>
-            <span><input name="view" type="radio" value="tree"> tree</span>  
-          </form>
-          <form class="sort">
+          <form class="sort" autocomplete="off">
             <p>Sort?</p>
             <span><input name="sort" type="radio" value="category"> category</span>
             <span><input name="sort" type="radio" value="timestamp"> date</span> 
             <span><input name="sort" type="radio" value="filesize"> size</span>  
+            <span><input name="sort" type="radio" value="filename"> filename</span> 
+          </form>
+          <form class="view-form" autocomplete="off">
+            <p>Choose view</p>
+            <span><input name="view" type="radio" value="cards" checked> cards</span>
+            <span><input name="view" type="radio" value="tree"> tree</span>  
           </form>
         </div>  
     </header>  
